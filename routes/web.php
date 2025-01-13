@@ -5,14 +5,15 @@ use App\Http\Controllers\ProvinceController;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 Route::get('/provinces', [ProvinceController::class, 'index']);
 
 
-Route::get('/map', function () {
+
+Route::get('/', function () {
     return view('map');
 });
