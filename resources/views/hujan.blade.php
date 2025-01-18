@@ -1,13 +1,14 @@
 @extends('app')
 
-@section('title', 'Map Page')
+@section('title', 'Hujan Page')
 
 @section('content')
-    <h1>Welcome to the Map Page</h1>
-    <div id="map"></div>
+    <h1>Welcome to the Air Page</h1>
+    <div id="air"></div>
 @endsection
 
 @section('scripts')
+
     <script>
         // Inisialisasi peta dengan titik fokus Pulau Jawa
         const map = L.map('map').setView([-7.5, 110], 7); // Fokus pada Pulau Jawa
@@ -19,19 +20,21 @@
         }).addTo(map);
 
         // Fungsi untuk menentukan warna berdasarkan populasi
-        function getColor(population) {
-            return population > 60000 ? '#9b1b30' :
-                population > 40000 ? '#d36f72' :
-                population > 20000 ? '#e7713e' :
-                population > 10000 ? '#ffb84c' :
-                population > 5000 ? '#ffeb67' :
-                '#a0d084'; // Warna default jika tidak masuk dalam rentang
+        function getColor(rainfall) {
+            return rainfall > 3000 ? '#003366' : // Biru tua untuk curah hujan sangat tinggi
+                rainfall > 2500 ? '#004d7f' : // Biru sedikit lebih terang
+                rainfall > 2000 ? '#006699' : // Biru sedang
+                rainfall > 1800 ? '#3385b4' : // Biru muda sedikit gelap
+                rainfall > 1500 ? '#66a3cc' : // Biru muda
+                '#99c2e6'; // Biru sangat terang untuk curah hujan rendah
         }
+
+
 
         // Gaya untuk setiap fitur GeoJSON
         function style(feature) {
             return {
-                fillColor: getColor(feature.properties.population),
+                fillColor: getColor(feature.properties.rainfall),
                 weight: 2,
                 opacity: 0.7,
                 color: 'white',
@@ -74,7 +77,9 @@
                 click: zoomToFeature
             });
 
-            layer.bindPopup(`<b>${feature.properties.name}</b><br>Population: ${feature.properties.population}`);
+            layer.bindPopup(
+                `<b>${feature.properties.name}</b><br>Rainfall: ${feature.properties.rainfall} mm </br>Category: ${feature.properties.rainfall_category}`
+                );
         }
 
         let geojson;
@@ -90,33 +95,34 @@
 
         // Method untuk memperbarui control info berdasarkan data yang di-hover
         info.update = function(props) {
-            this._div.innerHTML = '<h4>Populasi di Jawa</h4>' + (props ?
-                '<b>' + props.name + '</b><br />' + props.population + ' people' :
+            this._div.innerHTML = '<h4>Curah Hujan di Jawa</h4>' + (props ?
+                '<b>' + props.name + '</b><br />' + props.rainfall + ' mm' :
                 'Hover over a province');
         };
 
         info.addTo(map);
 
-        // Control legenda untuk populasi
+        // Control legenda untuk curah hujan
         var legend = L.control({
             position: 'bottomright'
         });
 
         legend.onAdd = function(map) {
             var div = L.DomUtil.create('div', 'info legend'),
-                grades = [0, 5000, 10000, 20000, 40000, 60000];
+                rainfallRanges = [0, 1500, 1800, 2000, 2500, 3000]; // Rentang curah hujan
 
-            // Loop untuk membuat label dan kotak warna untuk setiap rentang populasi
-            for (var i = 0; i < grades.length; i++) {
+            // Loop untuk membuat label dan kotak warna untuk setiap rentang curah hujan
+            for (var i = 0; i < rainfallRanges.length; i++) {
                 div.innerHTML +=
-                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                    '<i style="background:' + getColor(rainfallRanges[i] + 1) + '"></i> ' +
+                    rainfallRanges[i] + (rainfallRanges[i + 1] ? '&ndash;' + rainfallRanges[i + 1] + '<br>' : '+');
             }
 
             return div;
         };
 
         legend.addTo(map);
+
 
         // Referensi ke overlay elemen
         const loadingOverlay = document.getElementById('loading-overlay');

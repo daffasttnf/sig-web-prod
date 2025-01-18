@@ -46,6 +46,23 @@ class ProvinceResource extends Resource
                     ->required(),
                 Forms\Components\Textarea::make('polygon')
                     ->columnSpanFull(),
+                // Tambahan kolom baru
+                Forms\Components\TextInput::make('river')
+                    ->label('Main River'),
+                Forms\Components\TextInput::make('water_quality')
+                    ->label('Water Quality'),
+                Forms\Components\TextInput::make('ika')
+                    ->label('IKA (Water Index)')
+                    ->numeric(),
+                Forms\Components\TextInput::make('soil_type')
+                    ->label('Soil Type'),
+                Forms\Components\Textarea::make('soil_characteristics')
+                    ->label('Soil Characteristics'),
+                Forms\Components\TextInput::make('rainfall')
+                    ->label('Rainfall (mm)')
+                    ->numeric(),
+                Forms\Components\TextInput::make('rainfall_category')
+                    ->label('Rainfall Category'),
             ]);
     }
 
@@ -67,6 +84,30 @@ class ProvinceResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type_polygon'),
+                // Tambahan kolom baru
+                Tables\Columns\TextColumn::make('river')
+                    ->label('Main River')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('water_quality')
+                    ->label('Water Quality')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('ika')
+                    ->label('IKA (Water Index)')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('soil_type')
+                    ->label('Soil Type'),
+                Tables\Columns\TextColumn::make('soil_characteristics')
+                    ->label('Soil Characteristics')
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('rainfall')
+                    ->label('Rainfall (mm)')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('rainfall_category')
+                    ->label('Rainfall Category'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -1,10 +1,10 @@
 @extends('app')
 
-@section('title', 'Map Page')
+@section('title', 'Air Page')
 
 @section('content')
-    <h1>Welcome to the Map Page</h1>
-    <div id="map"></div>
+    <h1>Welcome to the Air Page</h1>
+    <div id="air"></div>
 @endsection
 
 @section('scripts')
@@ -19,19 +19,29 @@
         }).addTo(map);
 
         // Fungsi untuk menentukan warna berdasarkan populasi
-        function getColor(population) {
-            return population > 60000 ? '#9b1b30' :
-                population > 40000 ? '#d36f72' :
-                population > 20000 ? '#e7713e' :
-                population > 10000 ? '#ffb84c' :
-                population > 5000 ? '#ffeb67' :
-                '#a0d084'; // Warna default jika tidak masuk dalam rentang
+        function getColor(soil_type) {
+            // Menyesuaikan warna berdasarkan jenis tanah
+            switch (soil_type) {
+                case 'Aluvial':
+                    return '#a0d084'; // Hijau muda
+                case 'Latosol':
+                    return '#ffeb67'; // Kuning muda
+                case 'Podsolik':
+                    return '#ffb84c'; // Oranye
+                case 'Andosol':
+                    return '#e7713e'; // Merah
+                case 'Regosol':
+                    return '#9b1b30'; // Merah tua
+                default:
+                    return '#d36f72'; // Warna default untuk jenis tanah yang tidak terdaftar (merah)
+            }
         }
+
 
         // Gaya untuk setiap fitur GeoJSON
         function style(feature) {
             return {
-                fillColor: getColor(feature.properties.population),
+                fillColor: getColor(feature.properties.soil_type),
                 weight: 2,
                 opacity: 0.7,
                 color: 'white',
@@ -74,7 +84,9 @@
                 click: zoomToFeature
             });
 
-            layer.bindPopup(`<b>${feature.properties.name}</b><br>Population: ${feature.properties.population}`);
+            layer.bindPopup(
+                `<b>${feature.properties.name}</b><br>Jenis Tanah: ${feature.properties.soil_type} <br>${feature.properties.soil_characteristics}`
+                );
         }
 
         let geojson;
@@ -90,8 +102,8 @@
 
         // Method untuk memperbarui control info berdasarkan data yang di-hover
         info.update = function(props) {
-            this._div.innerHTML = '<h4>Populasi di Jawa</h4>' + (props ?
-                '<b>' + props.name + '</b><br />' + props.population + ' people' :
+            this._div.innerHTML = '<h4>Jenis Tanah di Jawa</h4>' + (props ?
+                '<b>' + props.name + '</b><br />' + props.soil_type :
                 'Hover over a province');
         };
 
@@ -104,17 +116,17 @@
 
         legend.onAdd = function(map) {
             var div = L.DomUtil.create('div', 'info legend'),
-                grades = [0, 5000, 10000, 20000, 40000, 60000];
+                soilTypes = ['Aluvial', 'Latosol', 'Podsolik', 'Andosol', 'Regosol']; // Jenis tanah
 
-            // Loop untuk membuat label dan kotak warna untuk setiap rentang populasi
-            for (var i = 0; i < grades.length; i++) {
+            // Loop untuk membuat label dan kotak warna untuk setiap jenis tanah
+            for (var i = 0; i < soilTypes.length; i++) {
                 div.innerHTML +=
-                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                    '<i style="background:' + getColor(soilTypes[i]) + '"></i> ' + soilTypes[i] + '<br>';
             }
 
             return div;
         };
+
 
         legend.addTo(map);
 

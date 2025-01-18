@@ -1,10 +1,10 @@
 @extends('app')
 
-@section('title', 'Map Page')
+@section('title', 'Air Page')
 
 @section('content')
-    <h1>Welcome to the Map Page</h1>
-    <div id="map"></div>
+    <h1>Welcome to the Air Page</h1>
+    <div id="air"></div>
 @endsection
 
 @section('scripts')
@@ -19,19 +19,19 @@
         }).addTo(map);
 
         // Fungsi untuk menentukan warna berdasarkan populasi
-        function getColor(population) {
-            return population > 60000 ? '#9b1b30' :
-                population > 40000 ? '#d36f72' :
-                population > 20000 ? '#e7713e' :
-                population > 10000 ? '#ffb84c' :
-                population > 5000 ? '#ffeb67' :
-                '#a0d084'; // Warna default jika tidak masuk dalam rentang
+        function getColor(ika) {
+            return ika > 85 ? '#4b9cd3' : // Biru terang untuk IKA sangat tinggi
+                ika > 70 ? '#67a9d0' : // Biru muda
+                ika > 65 ? '#7fb3c2' : // Biru kebiruan
+                ika > 45 ? '#99b7b3' : // Biru kehijauan
+                ika > 40 ? '#e88a6d' : // Merah muda keoranyean
+                '#d66e6e'; // Merah terang untuk IKA rendah
         }
 
         // Gaya untuk setiap fitur GeoJSON
         function style(feature) {
             return {
-                fillColor: getColor(feature.properties.population),
+                fillColor: getColor(feature.properties.ika),
                 weight: 2,
                 opacity: 0.7,
                 color: 'white',
@@ -74,7 +74,9 @@
                 click: zoomToFeature
             });
 
-            layer.bindPopup(`<b>${feature.properties.name}</b><br>Population: ${feature.properties.population}`);
+            layer.bindPopup(
+                `<b>${feature.properties.name}</b><br>IKA: ${feature.properties.ika}<br>Sungai: ${feature.properties.main_river}<br>Status: ${feature.properties.water_quality}`
+            );
         }
 
         let geojson;
@@ -90,8 +92,8 @@
 
         // Method untuk memperbarui control info berdasarkan data yang di-hover
         info.update = function(props) {
-            this._div.innerHTML = '<h4>Populasi di Jawa</h4>' + (props ?
-                '<b>' + props.name + '</b><br />' + props.population + ' people' :
+            this._div.innerHTML = '<h4>Indeks Kualitas Air Sungai di Jawa</h4>' + (props ?
+                '<b>' + props.name + '</b><br />' + props.ika :
                 'Hover over a province');
         };
 
@@ -104,17 +106,20 @@
 
         legend.onAdd = function(map) {
             var div = L.DomUtil.create('div', 'info legend'),
-                grades = [0, 5000, 10000, 20000, 40000, 60000];
+                ikaGrades = [0, 40, 45, 65, 70, 85]; // Menyesuaikan rentang IKA
 
-            // Loop untuk membuat label dan kotak warna untuk setiap rentang populasi
-            for (var i = 0; i < grades.length; i++) {
+            // Loop untuk membuat label dan kotak warna untuk setiap rentang IKA
+            for (var i = 0; i < ikaGrades.length; i++) {
                 div.innerHTML +=
-                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                    '<i style="background:' + getColor(ikaGrades[i] + 1) + '"></i> ' +
+                    // Menggunakan getColor dengan nilai lebih dari grade[i]
+                    ikaGrades[i] + (ikaGrades[i + 1] ? '&ndash;' + ikaGrades[i + 1] + '<br>' : '+');
             }
 
             return div;
         };
+
+
 
         legend.addTo(map);
 

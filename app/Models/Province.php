@@ -19,5 +19,13 @@ class Province extends Model
         'population',
         'type_polygon',
         'polygon',
+        'river',
+        'water_quality',
+        'ika',
+        'soil_type',
+        'soil_characteristics',
+        'rainfall',
+        'rainfall_category',
     ];
+    
 }
