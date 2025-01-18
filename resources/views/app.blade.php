@@ -225,7 +225,7 @@
 
         .glass-navbar {
             position: fixed;
-            bottom: 10px;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             margin: 0 auto;
