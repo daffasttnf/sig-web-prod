@@ -77,8 +77,18 @@
             backdrop-filter: blur(8px);
             /* Efek blur di belakang */
             padding: 15px;
+            bottom: 50px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            
+        }
+
+        /* Mobile - Sesuaikan posisi legenda */
+        @media (max-width: 768px) {
+            .legend {
+                bottom: 100px;
+                /* Tambah jarak dari navbar pada perangkat kecil */
+            }
         }
 
         .legend i {
@@ -215,8 +225,11 @@
 
         .glass-navbar {
             position: fixed;
-            bottom: 0;
-            left: 0;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0 auto;
+            max-width: 600px;
             width: 100%;
             display: flex;
             justify-content: space-around;
@@ -228,6 +241,17 @@
             transition: transform 0.3s ease-in-out;
             z-index: 99999;
         }
+
+        /* Mobile - Navbar full width */
+        @media (max-width: 768px) {
+            .glass-navbar {
+                width: 100%;
+                max-width: 100%;
+                left: 0;
+                transform: none;
+            }
+        }
+
 
         .glass-navbar a {
             text-decoration: none;
@@ -300,8 +324,8 @@
         </div>
     </div>
 
-   <script></script>
-   @yield('scripts')
+    <script></script>
+    @yield('scripts')
 
 </body>
 
